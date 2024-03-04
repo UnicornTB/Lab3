@@ -5,7 +5,6 @@ import com.example.lab3.models.TaskModel;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TaskRepository {
     private List<TaskModel> notes = new ArrayList<>();
     public void addTask(TaskModel taskModel) {
@@ -14,6 +13,7 @@ public class TaskRepository {
 
     public void editTask(int id, TaskModel taskModel) {
         TaskModel editedTask = notes.get(id);
+        System.out.println(editedTask);
         editedTask.setName(taskModel.getName());
         editedTask.setDescription(taskModel.getDescription());
     }
@@ -29,5 +29,10 @@ public class TaskRepository {
     public void setNotes(List<TaskModel> notes) {
         this.notes = notes;
     }
+
+    public int getNotesCount() {
+        return notes.size() - 1;
+    }
+
 }
 

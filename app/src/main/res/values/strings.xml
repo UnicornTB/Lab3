@@ -3,6 +3,7 @@
     <string name="noteName">Название</string>
     <string name="noteDescription">Описание</string>
     <string name="addNote">ДОБАВИТЬ</string>
-    <string name="editNote">СОХРАНИТЬ</string>
+    <string name="saveNote">СОХРАНИТЬ</string>
     <string name="showLastNote">ПОКАЗАТЬ ПОСЛЕДНЮЮ ЗАМЕТКУ</string>
+    <string name="editNote">РЕДАКТИРОВАТЬ</string>
 </resources>

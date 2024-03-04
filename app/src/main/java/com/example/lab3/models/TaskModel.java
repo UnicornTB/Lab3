@@ -1,22 +1,25 @@
 package com.example.lab3.models;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 
 public class TaskModel implements Serializable {
     private int id;
+    
     private String name;
+    
     private String description;
 
     public TaskModel(){}
-    public TaskModel(int id, String name, String description) {
+    public TaskModel(int id,  String name,  String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public TaskModel(String name, String description) {
+    public TaskModel( String name, String description) {
         this.name = name;
         this.description = description;
     }
@@ -47,9 +50,6 @@ public class TaskModel implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return  String.format("{ \"id\" : \"{0}\" " +
-                              " \"name\" : \"{1}\" " +
-                              " \"description\" : \"{2}\"}",
-                              id, name, description);
+        return id + "," + name + "," + description;
     }
 }
