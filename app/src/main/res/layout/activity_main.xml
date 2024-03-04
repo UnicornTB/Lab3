@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameInputLayot"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="666dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="hint" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/descriptionInputLayot"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="593dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameInputLayot">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/descriptionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/noteDescription" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="176dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="230dp"
+        android:layout_marginBottom="518dp"
+        android:text="@string/addNote"
+        android:onClick="addButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionInputLayot" />
+
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="176dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="53dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="518dp"
+        android:text="@string/editNote"
+        android:onClick="editButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/addButton"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionInputLayot" />
+
+    <ImageButton
+        android:id="@+id/previousNoteButton"
+        android:layout_width="169dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="234dp"
+        android:layout_marginBottom="451dp"
+        android:backgroundTint="#6750A3"
+        android:onClick="previousNoteButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addButton"
+        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+    <ImageButton
+        android:id="@+id/nextNoteButton"
+        android:layout_width="169dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="57dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="451dp"
+        android:backgroundTint="#6750A3"
+        android:onClick="nextNoteButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/previousNoteButton"
+        app:layout_constraintTop_toBottomOf="@+id/editButton"
+        app:srcCompat="@drawable/baseline_arrow_forward_24" />
+
+    <Button
+        android:id="@+id/showLastNote"
+        android:layout_width="380dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="389dp"
+        android:text="@string/showLastNote"
+        android:onClick="showLastNoteButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/previousNoteButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
