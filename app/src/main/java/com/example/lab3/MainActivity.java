@@ -1,7 +1,12 @@
 package com.example.lab3;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,16 +16,34 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lab3.models.TaskList;
 import com.example.lab3.models.TaskModel;
-import com.example.lab3.services.TaskService;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.example.lab3.repositories.TaskRepository;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private final TaskService taskService = new TaskService();
+    Random random = new Random();
+    ActivityResultLauncher<Intent> addActivityResult = registerForActivityResult
+                            (new ActivityResultContracts.StartActivityForResult(),
+                                    new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult activityResult) {
+                    Intent intent = activityResult.getData();
+                    TaskModel taskModel = new TaskModel(intent.getStringExtra("name"),
+                            intent.getStringExtra("description"));
+                    if (activityResult.getResultCode() == 1) {
+                        taskRepository.addTask(taskModel);
+                    }
+                    if (activityResult.getResultCode() == 2) {
+                        taskRepository.editTask(taskModel);
+                    }
+                    nameInputText.setText(taskModel.getName());
+                    descriptionInputText.setText(taskModel.getDescription());
+                }
+            });
+    private final TaskRepository taskRepository = new TaskRepository(new TaskList(new ArrayList<>()));
     private Button addNoteButton;
     private Button editNoteButton;
     private Button showLastNoteButton;
@@ -37,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_main_horizontal);
         }
+
         nameInputText = findViewById(R.id.name);
         descriptionInputText = findViewById(R.id.description);
         addNoteButton = findViewById(R.id.addButton);
@@ -47,39 +71,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addButtonClick(View view) {
-        taskService.addTask(getTaskFromUI());
-        showToast("Запись добавлена!");
+        Intent intent = new Intent(this, AddNoteActivity.class);
+        intent.putExtra("name", "Название " + random.nextInt(1000));
+        intent.putExtra("description", "Описание " + random.nextInt(1000));
+        addActivityResult.launch(intent);
     }
 
     public void editButtonClick(View view) {
-        taskService.editTask(getTaskFromUI());
-        showToast("Запись изменена!");
+        try {
+            Intent intent = new Intent(this, EditNoteActivity.class);
+            intent.putExtra("name", nameInputText.getText().toString());
+            intent.putExtra("description", descriptionInputText.getText().toString());
+            addActivityResult.launch(intent);
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            showToast("Нет записи, сначала добавьте запись!");
+        }
     }
 
     public void previousNoteButtonClick(View view) {
-        TaskModel taskModel = taskService.getPreviousTask();
-        nameInputText.setText(taskModel.getName());
-        descriptionInputText.setText(taskModel.getDescription());
-        showToast("Предыдущая запись");
+        try{
+            TaskModel taskModel = taskRepository.getPreviousTask();
+            nameInputText.setText(taskModel.getName());
+            descriptionInputText.setText(taskModel.getDescription());
+            showToast("Предыдущая запись");
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            showToast("Нет записей!");
+        }
+
     }
 
     public void nextNoteButtonClick(View view) {
-        TaskModel taskModel = taskService.getNextTask();
-        nameInputText.setText(taskModel.getName());
-        descriptionInputText.setText(taskModel.getDescription());
-        showToast("Следущая запись");
+        try{
+            TaskModel taskModel = taskRepository.getNextTask();
+            nameInputText.setText(taskModel.getName());
+            descriptionInputText.setText(taskModel.getDescription());
+            showToast("Следущая запись");
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            showToast("Нет записей!");
+        }
+
     }
 
     public void showLastNoteButtonClick(View view) {
-        TaskModel taskModel = taskService.getLastTask();
-        nameInputText.setText(taskModel.getName());
-        descriptionInputText.setText(taskModel.getDescription());
-        showToast("Последняя запись");
-    }
+        try{
+            TaskModel taskModel = taskRepository.getLastTask();
+            nameInputText.setText(taskModel.getName());
+            descriptionInputText.setText(taskModel.getDescription());
+            showToast("Последняя запись");
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            showToast("Нет записей!");
+        }
 
-    private TaskModel getTaskFromUI() {
-        return new TaskModel(nameInputText.getText().toString(),
-                descriptionInputText.getText().toString());
     }
 
     private void showToast(String text) {
@@ -120,29 +162,31 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("CurrenId", taskService.getCurrentTaskId());
-        ArrayList<String> data = new ArrayList<>();
-        for (TaskModel taskModel : taskService.getTaskRepository().getNotes()) {
-            data.add(taskModel.toString());
-        }
-        savedInstanceState.putStringArrayList("TaskModels", data);
+        savedInstanceState.putInt("currentId", taskRepository.getCurrentId());
+        savedInstanceState.putInt("maxId", taskRepository.getMaxTaskId());
+        savedInstanceState.putString("taskList", taskRepository.getTaskList().toString());
+        savedInstanceState.putString("noteName", nameInputText.getText().toString());
+        savedInstanceState.putString("noteDescription", descriptionInputText.getText().toString());
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        taskService.setCurrentTaskId(savedInstanceState.getInt("CurrenId"));
-        taskService.getTaskRepository().setNotes(parseTasks(savedInstanceState.getStringArrayList("TaskModels")));
-
+        taskRepository.setCurrentId(savedInstanceState.getInt("currentId"));
+        taskRepository.setMaxTaskId(savedInstanceState.getInt("maxId"));
+        taskRepository.setTaskList(parseTasks(savedInstanceState.getString("taskList")));
+        nameInputText.setText(savedInstanceState.getString("noteName"));
+        descriptionInputText.setText(savedInstanceState.getString("noteDescription"));
     }
 
-    private List<TaskModel> parseTasks(List<String> strings) {
-        List<TaskModel> taskModels = new ArrayList<>();
-        for (String string : strings) {
-            String[] fields = string.split(",");
-            taskModels.add(new TaskModel(Integer.parseInt(fields[0]),
-                                    fields[1], fields[2]));
+    private TaskList parseTasks(String data) {
+        TaskList taskList = new TaskList(new ArrayList<>());
+        String[] arrays = data.split("\n");
+        for (String string : arrays) {
+            String[] fields = string.split(", ");
+            TaskModel taskModel = new TaskModel(Integer.parseInt(fields[0]), fields[1],  fields[2]);
+            taskList.addTask(taskModel);
         }
-        return taskModels;
+        return taskList;
     }
 }

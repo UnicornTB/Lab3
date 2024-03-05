@@ -1,38 +1,85 @@
 package com.example.lab3.repositories;
 
+import com.example.lab3.models.TaskList;
 import com.example.lab3.models.TaskModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TaskRepository {
-    private List<TaskModel> notes = new ArrayList<>();
+    private TaskList taskList;
+
+    private int currentId = -1;
+
+    private int maxTaskId = -1;
+
+    public TaskRepository(TaskList taskList) {
+        this.taskList = taskList;
+    }
+
     public void addTask(TaskModel taskModel) {
-        notes.add(taskModel);
+        currentId++;
+        maxTaskId++;
+
+        if (taskModel.getId() == -1) {
+            taskModel.setId(currentId);
+        }
+
+        taskList.addTask(taskModel);
+
     }
 
-    public void editTask(int id, TaskModel taskModel) {
-        TaskModel editedTask = notes.get(id);
-        System.out.println(editedTask);
-        editedTask.setName(taskModel.getName());
-        editedTask.setDescription(taskModel.getDescription());
+    public void editTask(TaskModel taskModel) {
+        if (taskModel.getId() == -1) {
+            taskModel.setId(currentId);
+        }
+
+        taskList.editTask(taskModel);
     }
 
-    public TaskModel getTask(int id) {
-        return notes.get(id);
+    public TaskModel getPreviousTask() {
+        if (currentId == 0) {
+            currentId = maxTaskId;
+
+        } else {
+            currentId--;
+        }
+        return taskList.getTask(currentId);
     }
 
-    public List<TaskModel> getNotes() {
-        return notes;
+    public TaskModel getNextTask() {
+        if (currentId == maxTaskId) {
+            currentId = 0;
+            return taskList.getTask(currentId);
+        } else {
+            currentId++;
+        }
+        return taskList.getTask(currentId);
     }
 
-    public void setNotes(List<TaskModel> notes) {
-        this.notes = notes;
+    public TaskModel getLastTask() {
+        return taskList.getTask(maxTaskId);
     }
 
-    public int getNotesCount() {
-        return notes.size() - 1;
+    public TaskList getTaskList() {
+        return taskList;
     }
 
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
+    }
+
+    public int getCurrentId() {
+        return currentId;
+    }
+
+    public void setCurrentId(int currentId) {
+        this.currentId = currentId;
+    }
+
+    public int getMaxTaskId() {
+        return maxTaskId;
+    }
+
+    public void setMaxTaskId(int maxTaskId) {
+        this.maxTaskId = maxTaskId;
+    }
 }
 

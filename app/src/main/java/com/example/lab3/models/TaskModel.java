@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 
-public class TaskModel implements Serializable {
+public class TaskModel {
     private int id;
     
     private String name;
@@ -20,19 +20,23 @@ public class TaskModel implements Serializable {
     }
 
     public TaskModel( String name, String description) {
+        this.id = -1;
         this.name = name;
         this.description = description;
     }
-    public void setId(int id) {
+    public TaskModel setId(int id) {
         this.id = id;
+        return this;
     }
 
-    public void setName(String name) {
+    public TaskModel setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public void setDescription(String description) {
+    public TaskModel setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public int getId() {
@@ -50,6 +54,6 @@ public class TaskModel implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return id + "," + name + "," + description;
+        return id + ", " + name + ", " + description;
     }
 }
